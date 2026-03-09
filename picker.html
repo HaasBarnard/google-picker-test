@@ -60,18 +60,20 @@ function pickerCallback(data) {
 
     if (data.action === google.picker.Action.PICKED) {
 
-        const doc = data.docs[0]
+        const doc = data.docs[0];
 
-        const result = {
-            id: doc.id,
-            name: doc.name,
-            url: doc.url
-        }
+        const fileId = doc.id;
+        const name = doc.name;
+        const size = doc.sizeBytes || 0;
+
+        const redirect =
+          "myapp://picker" +
+          "?id=" + encodeURIComponent(fileId) +
+          "&name=" + encodeURIComponent(name) +
+          "&size=" + size;
 
         // Send result back to Android
-        window.location.href =
-            "myapp://picker?data=" +
-            encodeURIComponent(JSON.stringify(result))
+        window.location.href = redirect;
     }
 }
 
