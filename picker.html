@@ -51,6 +51,7 @@ function createPicker() {
         .setOAuthToken(accessToken)
         .addView(view)
         .setCallback(pickerCallback)
+        .setSize(google.picker.Size.LARGE)
         .build()
 
     picker.setVisible(true)
