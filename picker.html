@@ -41,9 +41,9 @@ function createPicker() {
     const apiKey = document.getElementById("apiKey").value
     const projectNumber = document.getElementById("projectNumber").value
 
-    const view = new google.picker.DocsView()
-        .setIncludeFolders(true)
-        .setSelectFolderEnabled(false)
+    const view = new google.picker.DocsView(google.picker.ViewId.PRESENTATIONS)
+        .setMimeTypes("application/vnd.google-apps.presentation")
+        .setIncludeFolders(false);
 
     const picker = new google.picker.PickerBuilder()
         .setDeveloperKey(apiKey)
