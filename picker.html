@@ -27,7 +27,8 @@ function createPicker() {
   }
 
   const view = new google.picker.DocsView(google.picker.ViewId.PRESENTATIONS)
-      .setMimeTypes("application/vnd.google-apps.presentation");
+      .setMimeTypes("application/vnd.google-apps.presentation")
+      .setMode(google.picker.DocsViewMode.THUMBNAILS);
 
   const picker = new google.picker.PickerBuilder()
       .setDeveloperKey(API_KEY)
