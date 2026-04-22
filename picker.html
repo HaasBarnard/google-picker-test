@@ -1,15 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
+<title>Google Picker Test</title>
+
+<script src="https://accounts.google.com/gsi/client"></script>
 <script src="https://apis.google.com/js/api.js"></script>
 
 <script>
 
 const API_KEY = "AIzaSyC45XGP_NeDe8-nxil7GTIDgZDQsb39nCU";
 const APP_ID = "123945608096";
+let accessToken = null
 
-  
+
+function loadPickerLibraries() {
+    gapi.load('picker', () => {
+        console.log("Picker library loaded")
+    })
+}
+
 function authenticate() {
+
+    const clientId = document.getElementById("clientId").value
+
     const tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: "123945608096-duhc7jrgicpr87f7h6ds4tud0kod30eh.apps.googleusercontent.com",
         scope: "https://www.googleapis.com/auth/drive.readonly",
@@ -25,62 +39,66 @@ function authenticate() {
     tokenClient.requestAccessToken()
 }
 
-function getToken() {
-  const params = new URLSearchParams(window.location.hash.substring(1));
-  return params.get("token");
-}
-
-function loadPicker() {
-  gapi.load('picker', {'callback': createPicker});
-}
-
 function createPicker() {
 
-  const token = getToken();
+    const view = new google.picker.DocsView(google.picker.ViewId.PRESENTATIONS)
+        .setMimeTypes("application/vnd.google-apps.presentation")
+        .setIncludeFolders(false);
 
-  if (!token) {
-    console.error("No token found");
-    return;
-  }
+    const picker = new google.picker.PickerBuilder()
+        .setDeveloperKey(API_KEY)
+        .setAppId(APP_ID)
+        .setOAuthToken(accessToken)
+        .addView(view)
+        .setCallback(pickerCallback)
+        .build()
 
-  const view = new google.picker.DocsView(google.picker.ViewId.PRESENTATIONS)
-      .setMimeTypes("application/vnd.google-apps.presentation")
-      .setMode(google.picker.DocsViewMode.THUMBNAILS);
-
-  const picker = new google.picker.PickerBuilder()
-      .setDeveloperKey(API_KEY)
-      .setAppId(APP_ID)
-      .setOAuthToken(token)
-      .addView(view)
-      .setCallback(pickerCallback)
-      .build();
-
-  picker.setVisible(true);
+    picker.setVisible(true)
 }
 
 function pickerCallback(data) {
 
-  if (data.action === google.picker.Action.PICKED) {
+    if (data.action === google.picker.Action.PICKED) {
 
-    const doc = data.docs[0];
+        const doc = data.docs[0];
 
-    const result = {
-      id: doc.id,
-      name: doc.name,
-      size: doc.sizeBytes || 0
-    };
+        const fileId = doc.id;
+        const name = doc.name;
+        const size = doc.sizeBytes || 0;
 
-    const encoded = btoa(JSON.stringify(result));
 
-    window.location.href =
-      "myapp://picker?data=" + encodeURIComponent(encoded);
-  }
+
+        const redirect =
+          "myapp://picker" +
+          "?id=" + encodeURIComponent(fileId) +
+          "&name=" + encodeURIComponent(name) +
+            "&accessToken=" + encodeURIComponent(accessToken) +
+          "&size=" + size;
+
+        // Send result back to Android
+        window.location.href = redirect;
+    }
 }
 
 </script>
 </head>
 
-<body onload="authenticate()">
-Launching picker...
+<body onload="loadPickerLibraries()">
+
+<h3>Google Picker Test</h3>
+
+<p>API Key</p>
+<input id="apiKey" style="width:400px"/>
+
+<p>Client ID</p>
+<input id="clientId" style="width:400px"/>
+
+<p>Project Number</p>
+<input id="projectNumber" style="width:400px"/>
+
+<br><br>
+
+<button onclick="authenticate()">Authenticate + Open Picker</button>
+
 </body>
 </html>
