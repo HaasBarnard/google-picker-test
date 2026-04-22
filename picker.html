@@ -8,6 +8,23 @@
 const API_KEY = "AIzaSyC45XGP_NeDe8-nxil7GTIDgZDQsb39nCU";
 const APP_ID = "123945608096";
 
+  
+function authenticate() {
+    const tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: "123945608096-duhc7jrgicpr87f7h6ds4tud0kod30eh.apps.googleusercontent.com",
+        scope: "https://www.googleapis.com/auth/drive.readonly",
+        callback: (response) => {
+
+            accessToken = response.access_token
+            console.log("Access token received")
+
+            createPicker()
+        }
+    })
+
+    tokenClient.requestAccessToken()
+}
+
 function getToken() {
   const params = new URLSearchParams(window.location.hash.substring(1));
   return params.get("token");
@@ -63,7 +80,7 @@ function pickerCallback(data) {
 </script>
 </head>
 
-<body onload="loadPicker()">
+<body onload="authenticate()">
 Launching picker...
 </body>
 </html>
