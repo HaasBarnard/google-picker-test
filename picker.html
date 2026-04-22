@@ -26,7 +26,7 @@ function authenticate() {
 
     const tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: "123945608096-duhc7jrgicpr87f7h6ds4tud0kod30eh.apps.googleusercontent.com",
-        scope: "https://www.googleapis.com/auth/drive.readonly",
+        scope: "https://www.googleapis.com/auth/drive.file",
         callback: (response) => {
 
             accessToken = response.access_token
